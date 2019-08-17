@@ -1,7 +1,8 @@
 <template>
   <div id="todo">
     <h1>Todo</h1>
-    <TodoList :todos="todos"/>
+    <TodoList :todos="todos" @check="done" @del="deleteTodo"/>
+    <p>新しいTodoの追加: <input type="text" v-model="newTodo" @keyup.enter="addTodo"></p>
   </div>
 </template>
 
@@ -25,6 +26,7 @@ export default {
   },
   data() {
     return {
+      newTodo: '',
       todos: [
         { id: getUUID(), text: 'Fubuki', done: false},
         { id: getUUID(), text: 'Shirayuki', done: true},
@@ -33,8 +35,21 @@ export default {
       ]
     }
   },
-  mounted() {
-    console.log(this.todos)
+  methods: {
+    done(id, checked) {
+      this.todos.find((todo) => todo.id === id).done = checked
+    },
+    addTodo() {
+      this.todos.push({
+        id: getUUID(),
+        text: this.newTodo,
+        done: false
+      })
+      this.newTodo = ''
+    },
+    deleteTodo(id) {
+      this.todos = this.todos.filter((todo) => todo.id !== id)
+    }
   }
 }
 </script>
